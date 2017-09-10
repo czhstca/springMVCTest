@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd 
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd 
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context.xsd 
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop.xsd 
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx.xsd">
+		
+	<!-- 配置默认HandlerAdapter,用于执行自己配置的Controller-->
+	<!-- 编写的Handler要实现Controller接口 -->	
+	<bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"></bean>
+	
+	<!-- 配置HttpRequestHandlerAdapter -->
+	<!-- 要求实现HttpRequestHandler接口 -->
+	<bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"></bean>
+	
+	<!-- 配置HandlerMapping,将bean的name作为url查找，需要在配置Controller时指定beanName -->
+	<bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"></bean>
+	
+	<!-- 配置另一种HandlerMapping,使用bean的id，对同一个bean的url映射集中处理 -->
+	<!-- 多个HandlerMapping可以共存，dispatcher通过url判断可以让哪个HandlerMapping映射，就作映射处理 -->
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+	   	   <props>
+	   	   	<prop key="/pingan/items/querytest1">itemController1</prop>
+	   	   	<prop key="/pingan/items/querytest2">itemController2</prop>
+	   	   </props>
+		</property>
+	</bean>
+	
+	<!-- 配置自己的Controller -->
+	<bean id="itemController1" name="/pingan/items/querytest" class="com.pingan.ssm.controller.ItemController1"></bean>
+	
+	<bean id="itemController2" class="com.pingan.ssm.controller.ItemController2"></bean>
+	
+	<!-- 配置viewResolver -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!-- 配置jsp的前缀 -->
+		<property name="prefix" value="/WEB-INF/jsp/"/>
+		<!-- 配置jsp的后缀,代码里就可以用简易写法了 -->
+		<property name="suffix" value=".jsp"/>
+	</bean>
+	
+	
+	
+	
+	<!-- 默认的HandlerMapping,HandlerAdapter,ViewResolver等都已经在 DispatcherServlet.properties文件中配置，默认自动加载 -->
+	
+	
+	
+	
+	<!-- 配置注解HandlerMapping -->
+	<!-- Spring3.1之后用的是  org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping -->
+	<!-- <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"></bean> -->
+	
+	<!-- 配置注解HandlerAdapter -->
+	<!-- Spring3.1之后用的是  org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapte -->
+	<!-- <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"></bean> -->
+	
+	<!-- 使用MVC注解驱动，可以代替上面的HandlerMapping和HandlerAdapter的配置(实际开发用这种!)-->
+	<!-- 这个注解驱动还默认加载了很多参数，比如json转换等 -->
+	<mvc:annotation-driven></mvc:annotation-driven>
+	
+	<!-- 配置扫描组件,可以扫描service,bean,controller等 -->
+	<!-- 这里指定controller的包 -->
+	<context:component-scan base-package="com.pingan.ssm.controller"></context:component-scan>
+	
+	
+</beans>
